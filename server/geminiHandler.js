@@ -64,9 +64,9 @@ function createVariantSchema(kind) {
 }
 
 export async function generateServerVariants({ prompt, campaignType, tone, persona }) {
-  const apiKey = process.env.GEMINI_API_KEY;
+  const apiKey = process.env.GEMINI_API_KEY || process.env.VITE_GEMINI_API_KEY;
   if (!apiKey) {
-    throw new Error('Server missing GEMINI_API_KEY');
+    throw new Error('Server missing GEMINI_API_KEY (or VITE_GEMINI_API_KEY). Add it to your .env file.');
   }
   const ai = new GoogleGenAI({ apiKey });
 

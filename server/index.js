@@ -1,7 +1,11 @@
 import express from 'express';
 import cors from 'cors';
 import bodyParser from 'body-parser';
+import dotenv from 'dotenv';
 import { generateServerVariants } from './geminiHandler.js';
+
+// Load environment variables from .env at startup
+dotenv.config();
 
 const app = express();
 app.use(cors());
@@ -20,4 +24,5 @@ app.post('/api/generate', async (req, res) => {
 });
 
 const port = process.env.PORT || 5174;
-app.listen(port, () => console.log(`API server listening on ${port}`));
+const keyPresent = !!(process.env.GEMINI_API_KEY || process.env.VITE_GEMINI_API_KEY);
+app.listen(port, () => console.log(`API server listening on ${port} (Gemini key ${keyPresent ? 'detected' : 'MISSING'})`));
