@@ -5,7 +5,7 @@ import react from '@vitejs/plugin-react';
 // With Vite, any variable prefixed with VITE_ in .env is automatically exposed via import.meta.env
 export default defineConfig({
   server: {
-    port: 3000,
+    port: 5173,
     host: '0.0.0.0',
   },
   plugins: [react()],
