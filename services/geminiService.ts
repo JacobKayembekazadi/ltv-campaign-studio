@@ -1,8 +1,12 @@
 import { GoogleGenAI, Type } from "@google/genai";
 import type { CampaignType, GeneratedVariants, Tone, Persona, ImageEmailContent, EmailContent, SmsContent } from "../types";
 
-// Instantiate client (key is injected at build time via Vite define)
-const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY as string });
+// Instantiate client using Vite public env variable. Must be prefixed with VITE_ in .env
+const apiKey = (import.meta as any).env?.VITE_GEMINI_API_KEY as string | undefined;
+if (!apiKey) {
+    console.error('Gemini API key missing. Make sure VITE_GEMINI_API_KEY is defined in your .env file.');
+}
+const ai = new GoogleGenAI({ apiKey: apiKey || '' });
 
 // --- Retry / Backoff Configuration ---
 const MAX_RETRIES = 5;
