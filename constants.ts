@@ -17,17 +17,27 @@ export const PROMPT_LIBRARY: Prompt[] = [
     {
         id: 'promo-1',
         name: 'Abandoned Cart Recovery',
-        text: "Generate a personalized message for [Name] who is a [Segment] customer and left items in their cart. Their sentiment is [Sentiment].\n\nObjective: Remind them to complete their order. Offer a small incentive if their segment is 'Churn risk'. Highlight urgency if their segment is 'VIP'. If an explicit image URL override is provided externally, keep copy relevant to that image; do not invent a different one."
+        text: "Customer Profile: [Name] is a [Segment] customer who abandoned their cart. Current sentiment: [Sentiment]. Last purchase: [Last Purchase].\n\nMission: Create urgency to complete purchase. Use segment psychology - VIP gets exclusivity angle, Churn Risk gets win-back incentive, New gets reassurance and social proof. Reference specific items they left behind. Drive immediate action."
     },
     {
-        id: 'promo-2',
+        id: 'promo-2', 
         name: 'VIP Loyalty Reward',
-        text: "Generate a personalized message for [Name] who is a [Segment] customer. Their last purchase was on [Last Purchase] and their sentiment is [Sentiment].\n\nObjective: Thank this loyal customer. If they are a 'VIP', include an exclusive reward or early access. Keep the tone warm, personal, and celebratory. Respect any externally provided image URL if present."
+        text: "Customer Profile: [Name] is a [Segment] customer. Last purchase: [Last Purchase]. Sentiment: [Sentiment].\n\nMission: Reward loyalty with exclusive perks. VIP segment gets early access and premium benefits. Regular segment gets appreciation with upgrade path. Create sense of being valued and special. Include time-sensitive reward."
     },
     {
         id: 'promo-3',
-        name: 'Product Launch Hype',
-        text: "Generate a personalized message for [Name] ([Segment] customer) to build excitement for a new product launch: [PRODUCT NAME - REPLACE THIS].\n\nObjective: For 'VIPs', emphasize exclusivity. For 'New' customers, highlight benefits and social proof. Include a strong call-to-action. If an image override is supplied, align copy with that image theme."
+        name: 'New Product Launch',
+        text: "Customer Profile: [Name] is a [Segment] customer. Purchase history: [Last Purchase]. Sentiment: [Sentiment].\n\nMission: Generate excitement for new product launch. VIP gets first access, New customers get education + social proof, Churn Risk gets comeback incentive. Create FOMO and anticipation. Include specific product benefits."
+    },
+    {
+        id: 'promo-4',
+        name: 'Seasonal Sale Blast',
+        text: "Customer Profile: [Name] ([Segment]) with [Sentiment] sentiment. Last engaged: [Last Purchase].\n\nMission: Drive seasonal purchases with targeted offers. Reference their past purchase patterns. VIP gets bigger discounts, New gets welcome offer, Churn Risk gets aggressive win-back. Create urgency with limited time."
+    },
+    {
+        id: 'promo-5',
+        name: 'Cross-Sell Recommendation',
+        text: "Customer Profile: [Name] is a [Segment] customer. Previous purchase: [Last Purchase]. Current sentiment: [Sentiment].\n\nMission: Recommend complementary products based on purchase history. Use social proof and benefit stacking. Create natural progression from what they already bought. Include bundle incentive."
     },
     {
         id: 'promo-4',

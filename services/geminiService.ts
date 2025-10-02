@@ -83,9 +83,35 @@ export async function generateCampaignCopy(
     persona: Persona
 ): Promise<GeneratedVariants> {
 
-    const styleGuidelines = `You are an AI Marketing Copywriter specializing in e-commerce conversion rate optimization (CRO). Your role is to generate short-form, high-impact copy for Email and SMS campaigns that maximizes engagement (opens, clicks, purchases). \n\nSTRICT OUTPUT BEHAVIOR (STILL RETURN JSON SCHEMA BELOW, *NOT* MARKDOWN):\n- ALWAYS produce two distinct persuasive variants (A & B).\n- Personalize copy using provided customer attributes verbatim.\n- Tone MUST reflect: ${tone}.\n- Segment context MUST influence hook & offer framing.\n- Email subjects: 5-8 words, curiosity or benefit-driven, no spammy excessive punctuation.\n- Email body: 3-6 concise sentences. Begin with a hook tied to the segment. Finish with a strong CTA line.\n- SMS body: < 240 characters, 1 hook + benefit + CTA.\n- Include a clear CTA (ctaText / cta field).\n- Avoid generic filler, avoid robotic phrasing, no meta commentary.\n- If couponCode requested or implied by prompt and segment is Churn risk or VIP, you may include one.\n- DO NOT add explanatory prose outside JSON.\n`;
+    const styleGuidelines = `You are an AI Marketing Copywriter specializing in e-commerce conversion rate optimization (CRO). Your role is to generate short-form, high-impact copy for Email and SMS campaigns that maximizes engagement (opens, clicks, purchases).
 
-    const systemInstruction = `${styleGuidelines}\nYou are embodying a ${persona} brand persona with a ${tone} tone. Generate two distinct versions of marketing copy (Variant A and Variant B) based on the user's prompt. Ensure the response strictly follows the provided JSON schema. Personalize the content by directly using the customer's name and details provided in the prompt.`;
+CRITICAL RULES FOR HIGH-CONVERTING COPY:
+1. PERSONALIZATION: Use the customer's exact name, segment, purchase history, and sentiment provided
+2. SEGMENT-SPECIFIC HOOKS: 
+   - VIP: Exclusive access, early bird, members-only
+   - Churn Risk: We miss you, come back, special win-back offer
+   - New: Welcome, first purchase bonus, discover
+   - Regular: Seasonal offers, new arrivals, recommendations
+3. TONE ADHERENCE: Copy MUST reflect the specified ${tone} tone throughout
+4. PERSONA EMBODIMENT: Channel the ${persona} brand voice consistently
+
+STRICT FORMATTING REQUIREMENTS:
+- Email subjects: 3-7 words max, benefit-driven or curiosity gap, NO excessive punctuation
+- Email body: 2-4 sentences max, hook + benefit + urgency + clear CTA
+- SMS: Under 160 characters total, conversational tone
+- CTAs: Action-oriented verbs (Shop, Claim, Discover, Get, Unlock)
+- Coupons: Only for VIP/Churn segments, format like SAVE20 or WELCOME15
+
+AVOID AT ALL COSTS:
+- Generic greetings like "Hope you're well"
+- Corporate jargon or robotic language  
+- Multiple exclamation points or ALL CAPS
+- Vague benefits or weak CTAs
+- Repetitive phrasing between variants
+
+OUTPUT: Two distinctly different, high-converting variants that feel human-written and segment-appropriate.`;
+
+    const systemInstruction = `${styleGuidelines}\n\nEmbody a ${persona} brand persona with ${tone} tone. The customer data provided contains real insights - use them strategically. Generate two completely different marketing approaches (Variant A and B) that would genuinely convert this specific customer based on their profile.`;
 
     let schemaType: 'Image' | 'Text' | 'SMS';
     if (campaignType === 'Image Email') schemaType = 'Image';
@@ -129,29 +155,63 @@ export async function generateCampaignCopy(
             throw new Error("Missing Variant A or B in AI response.");
         }
         
-        // Post-process normalization
+        // Enhanced post-processing for quality control
         const normalize = (variant: any) => {
             if (!variant) return variant;
+            
+            // Subject line quality control
             if (campaignType !== 'SMS' && variant.subject) {
-                const words = variant.subject.split(/\s+/).filter(Boolean);
-                if (words.length > 8) {
-                    variant.subject = words.slice(0, 8).join(' ');
+                let subject = variant.subject.trim();
+                // Remove excessive punctuation
+                subject = subject.replace(/[!]{2,}/g, '!').replace(/[?]{2,}/g, '?');
+                // Word count enforcement (3-7 words for better open rates)
+                const words = subject.split(/\s+/).filter(Boolean);
+                if (words.length > 7) {
+                    subject = words.slice(0, 7).join(' ');
                 }
+                variant.subject = subject;
             }
+            
+            // Body quality control
+            if (variant.body) {
+                let body = variant.body.trim();
+                // Remove generic openers
+                body = body.replace(/^(Hi there,?|Hello,?|Hope you're well,?)\s*/i, '');
+                // Ensure personal name usage if available in original prompt
+                variant.body = body;
+            }
+            
+            // SMS length enforcement
             if (campaignType === 'SMS' && variant.part1) {
                 const combined = variant.part1 + (variant.part2 ? ' ' + variant.part2 : '');
-                if (combined.length > 240) {
-                    const trimmed = combined.slice(0, 237).trimEnd() + '...';
+                if (combined.length > 160) {
+                    const trimmed = combined.slice(0, 157).trimEnd() + '...';
                     variant.part1 = trimmed;
                     delete variant.part2;
                 }
             }
+            
+            // CTA enhancement
             if (variant.ctaText && typeof variant.ctaText === 'string') {
-                variant.ctaText = variant.ctaText.trim();
-                if (!/shop|claim|complete|view|explore|redeem|buy/i.test(variant.ctaText)) {
-                    variant.ctaText = variant.ctaText + ' →';
+                let cta = variant.ctaText.trim();
+                // Ensure action-oriented language
+                const actionWords = ['shop', 'claim', 'get', 'discover', 'unlock', 'grab', 'secure', 'explore', 'buy', 'order'];
+                if (!actionWords.some(word => cta.toLowerCase().includes(word))) {
+                    cta = 'Shop ' + cta;
                 }
+                variant.ctaText = cta;
             }
+            
+            // Coupon code enhancement for relevant segments
+            if (variant.couponCode && typeof variant.couponCode === 'string') {
+                let coupon = variant.couponCode.trim().toUpperCase();
+                // Ensure proper format (letters + numbers)
+                if (!/^[A-Z0-9]+$/.test(coupon)) {
+                    coupon = coupon.replace(/[^A-Z0-9]/g, '');
+                }
+                variant.couponCode = coupon || 'SAVE15';
+            }
+            
             return variant;
         };
         normalize(parsedJson.A);
