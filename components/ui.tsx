@@ -67,7 +67,10 @@ interface EmailPreviewProps extends PreviewProps {
 }
 
 const EmailInboxItemPreview: React.FC<EmailPreviewProps> = ({ variant, content, customerName, onCopy, isCopied }) => {
-    const subject = content?.subject?.replace('[Name]', customerName) || '[No Subject]';
+    // Debug logging to see what content we're getting
+    console.log('EmailInboxItemPreview - variant:', variant, 'content:', content, 'customerName:', customerName);
+    
+    const subject = content?.subject?.replace('[Name]', customerName) || '[No Subject - Debug: content is ' + JSON.stringify(content) + ']';
     const body = content?.body?.replace('[Name]', customerName) || '';
     const rawSnippet = body.split('\n').join(' ').replace(/\s+/g, ' ').trim();
     const snippet = rawSnippet.length > 110 ? rawSnippet.substring(0, 107).trim() + '…' : rawSnippet;
