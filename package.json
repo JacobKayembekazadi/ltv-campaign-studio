@@ -4,7 +4,7 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "dev": "npm-run-all -p dev:api dev:client",
+    "dev": "vite",
     "dev:client": "vite",
     "dev:api": "node server/index.js",
     "build": "vite build",
