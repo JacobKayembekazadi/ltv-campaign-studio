@@ -69,8 +69,8 @@ function createVariantSchema(schemaType: 'Image' | 'Text' | 'SMS') {
     return {
         type: Type.OBJECT,
         properties: {
-            part1: { type: Type.STRING, description: 'The first part of a conversational SMS. Should be a friendly opening.' },
-            part2: { type: Type.STRING, description: 'The second part of the SMS, continuing the conversation.' },
+            part1: { type: Type.STRING, description: 'First SMS message: casual, direct opener with name. Max 70 characters. Example: "Hey Sarah! Your cart misses you 😊"' },
+            part2: { type: Type.STRING, description: 'Second SMS message: benefit + urgency + CTA. Max 90 characters. Example: "Grab those items before they sell out → [link]"' },
         },
         required: ['part1', 'part2']
     };
@@ -98,9 +98,18 @@ CRITICAL RULES FOR HIGH-CONVERTING COPY:
 STRICT FORMATTING REQUIREMENTS:
 - Email subjects: 3-7 words max, benefit-driven or curiosity gap, NO excessive punctuation
 - Email body: 2-4 sentences max, hook + benefit + urgency + clear CTA
-- SMS: Under 160 characters total, conversational tone
+- SMS: CASUAL & CONVERSATIONAL like texting a friend. Use "Hey [Name]!" openings. Max 160 chars total across both parts. Include emojis sparingly.
 - CTAs: Action-oriented verbs (Shop, Claim, Discover, Get, Unlock)
 - Coupons: Only for VIP/Churn segments, format like SAVE20 or WELCOME15
+
+SMS-SPECIFIC RULES:
+- Write like you're texting a friend, not sending a formal message
+- Use contractions (you're, don't, can't)
+- Keep sentences short and punchy
+- NO formal language like "exquisite selections" or "patiently awaiting"
+- Use casual phrases: "Your cart misses you", "Don't let these sell out", "Grab yours"
+- Include 1-2 relevant emojis maximum
+- Split naturally between 2 messages that flow together
 
 AVOID AT ALL COSTS:
 - Generic greetings like "Hope you're well"
@@ -108,6 +117,7 @@ AVOID AT ALL COSTS:
 - Multiple exclamation points or ALL CAPS
 - Vague benefits or weak CTAs
 - Repetitive phrasing between variants
+- FORMAL SMS LANGUAGE - keep it casual and conversational!
 
 OUTPUT: Two distinctly different, high-converting variants that feel human-written and segment-appropriate.`;
 
@@ -181,13 +191,40 @@ OUTPUT: Two distinctly different, high-converting variants that feel human-writt
                 variant.body = body;
             }
             
-            // SMS length enforcement
+            // SMS length and quality enforcement
             if (campaignType === 'SMS' && variant.part1) {
-                const combined = variant.part1 + (variant.part2 ? ' ' + variant.part2 : '');
+                // Clean up formal language in SMS
+                let part1 = variant.part1.replace(/exquisite|patiently awaiting|valued customer|selections/gi, '');
+                let part2 = variant.part2 || '';
+                
+                // Ensure casual tone
+                part1 = part1.replace(/^(Hello|Hi there),?\s*/i, 'Hey ');
+                part1 = part1.replace(/\byou are\b/gi, "you're");
+                part1 = part1.replace(/\bdo not\b/gi, "don't");
+                part1 = part1.replace(/\bcannot\b/gi, "can't");
+                
+                // Same for part2
+                part2 = part2.replace(/\byou are\b/gi, "you're");
+                part2 = part2.replace(/\bdo not\b/gi, "don't");
+                part2 = part2.replace(/\bcannot\b/gi, "can't");
+                
+                const combined = part1 + ' ' + part2;
                 if (combined.length > 160) {
+                    // Trim but keep it natural
                     const trimmed = combined.slice(0, 157).trimEnd() + '...';
-                    variant.part1 = trimmed;
-                    delete variant.part2;
+                    // Try to split at natural point
+                    const midPoint = Math.floor(trimmed.length / 2);
+                    const splitPoint = trimmed.indexOf(' ', midPoint);
+                    if (splitPoint > 0 && splitPoint < trimmed.length - 20) {
+                        variant.part1 = trimmed.slice(0, splitPoint).trim();
+                        variant.part2 = trimmed.slice(splitPoint).trim();
+                    } else {
+                        variant.part1 = trimmed;
+                        delete variant.part2;
+                    }
+                } else {
+                    variant.part1 = part1.trim();
+                    variant.part2 = part2.trim();
                 }
             }
             
