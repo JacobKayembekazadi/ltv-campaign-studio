@@ -1,0 +1,5 @@
+{
+  "name": "AI Campaign Studio",
+  "description": "A powerful web application that leverages the Gemini API to generate personalized Email and SMS marketing campaigns in seconds. Users can upload customer data, select prompt templates, and generate A/B test copy variations tailored to each customer's segment and sentiment.",
+  "requestFramePermissions": []
+}
