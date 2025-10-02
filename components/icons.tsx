@@ -5,7 +5,7 @@ interface IconProps {
 }
 
 export const EditIcon: React.FC<IconProps> = ({ className }) => (
-  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className || "h-4 w-4"}><path d="M17 3a2.85 2.85 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z" /><path d="m15 5 4 4" /></svg>
+  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className || "h-4 w-4"}><path d="M17 3a2.85 2.85 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z" /><path d="m15 5 4 4" /></svg>
 );
 export const WandIcon: React.FC<IconProps> = ({ className }) => (
     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className || "mr-2 h-5 w-5"}><path d="M15 4V2"/><path d="M15 16v-2"/><path d="M14 9h2"/><path d="M3 9h2"/><path d="M21 9h-2"/><path d="M12 11.5 9 8.5"/><path d="M12 11.5 15 8.5"/><path d="M12 2v2.5"/><path d="m3.5 11.64 1.73 1"/><path d="m18.77 12.64 1.73-1"/><circle cx="12" cy="12" r="6"/><path d="M12 18v2.5"/><path d="m3.5 18.36 1.73-1"/><path d="m18.77 17.36 1.73 1"/></svg>
