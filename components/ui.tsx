@@ -76,21 +76,21 @@ const EmailInboxItemPreview: React.FC<EmailPreviewProps> = ({ variant, content, 
     const snippet = rawSnippet.length > 110 ? rawSnippet.substring(0, 107).trim() + '…' : rawSnippet;
 
     return (
-        <div className="bg-white rounded-lg px-4 py-3 border border-gray-200 relative group hover:shadow-md transition-shadow duration-200">
+        <div className="bg-white rounded-lg p-4 border border-gray-200 relative group hover:shadow-md transition-shadow duration-200">
             <PreviewHeader variant={variant} onCopy={onCopy} isCopied={isCopied} />
-            <div className="flex items-start gap-3">
-                <div className="flex flex-col items-center gap-2 pt-0.5 text-gray-400 flex-shrink-0">
-                    <input aria-label="Select conversation" type="checkbox" className="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500 cursor-pointer" />
-                    <button className="hover:text-yellow-500" aria-label="Star email">
-                        <StarIcon className="h-4 w-4" />
-                    </button>
+            
+            {/* Full email content view instead of inbox snippet */}
+            <div className="space-y-3">
+                <div>
+                    <label className="text-xs font-medium text-gray-500 uppercase tracking-wider">Subject Line</label>
+                    <p className="font-bold text-gray-900 text-sm mt-1">{subject}</p>
                 </div>
-                <div className="flex-shrink-0 w-40 md:w-44 font-medium text-gray-800 truncate leading-snug">
-                    Marketing Team
-                </div>
-                <div className="flex-grow min-w-0">
-                    <p className="font-bold text-gray-900 text-sm truncate leading-snug pr-6">{subject}</p>
-                    <p className="text-xs text-gray-500 mt-1 line-clamp-2 leading-relaxed pr-6">{snippet || 'No preview available.'}</p>
+                
+                <div>
+                    <label className="text-xs font-medium text-gray-500 uppercase tracking-wider">Email Body</label>
+                    <div className="mt-1 p-3 bg-gray-50 rounded-md border">
+                        <p className="text-sm text-gray-800 whitespace-pre-wrap leading-relaxed">{body || 'No content generated'}</p>
+                    </div>
                 </div>
             </div>
         </div>
