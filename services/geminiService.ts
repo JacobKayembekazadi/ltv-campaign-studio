@@ -97,10 +97,17 @@ CRITICAL RULES FOR HIGH-CONVERTING COPY:
 
 STRICT FORMATTING REQUIREMENTS:
 - Email subjects: 3-7 words max, benefit-driven or curiosity gap, NO excessive punctuation
-- Email body: 2-4 sentences max, hook + benefit + urgency + clear CTA
+- Email body: 2-4 sentences max, hook + benefit + urgency + clear CTA. Write like a friend, not a corporate newsletter.
 - SMS: CASUAL & CONVERSATIONAL like texting a friend. Use "Hey [Name]!" openings. Max 160 chars total across both parts. Include emojis sparingly.
 - CTAs: Action-oriented verbs (Shop, Claim, Discover, Get, Unlock)
 - Coupons: Only for VIP/Churn segments, format like SAVE20 or WELCOME15
+
+EMAIL-SPECIFIC RULES:
+- NO flowery language like "exquisite selections", "truly special", "patiently awaiting"
+- Use direct, benefit-focused language: "Your cart items", "Don't miss out", "Limited time"
+- Keep it conversational but not overly casual
+- Lead with the benefit or urgency, not pleasantries
+- Examples: "Your cart expires soon" not "Your exquisite selections are waiting"
 
 SMS-SPECIFIC RULES:
 - Write like you're texting a friend, not sending a formal message
@@ -118,6 +125,8 @@ AVOID AT ALL COSTS:
 - Vague benefits or weak CTAs
 - Repetitive phrasing between variants
 - FORMAL SMS LANGUAGE - keep it casual and conversational!
+- FLOWERY EMAIL LANGUAGE - no "exquisite", "truly special", "patiently awaiting", "valued customer"
+- EMAIL PLEASANTRIES - get straight to the point with benefit/urgency
 
 OUTPUT: Two distinctly different, high-converting variants that feel human-written and segment-appropriate.`;
 
@@ -174,6 +183,11 @@ OUTPUT: Two distinctly different, high-converting variants that feel human-writt
                 let subject = variant.subject.trim();
                 // Remove excessive punctuation
                 subject = subject.replace(/[!]{2,}/g, '!').replace(/[?]{2,}/g, '?');
+                // Clean up flowery language in subjects
+                subject = subject.replace(/\bexquisite selections?\b/gi, 'Your cart');
+                subject = subject.replace(/\bluxurious selection\b/gi, 'Your items');
+                subject = subject.replace(/\bgentle reminder\b/gi, 'Reminder');
+                
                 // Word count enforcement (3-7 words for better open rates)
                 const words = subject.split(/\s+/).filter(Boolean);
                 if (words.length > 7) {
@@ -187,7 +201,17 @@ OUTPUT: Two distinctly different, high-converting variants that feel human-writt
                 let body = variant.body.trim();
                 // Remove generic openers
                 body = body.replace(/^(Hi there,?|Hello,?|Hope you're well,?)\s*/i, '');
-                // Ensure personal name usage if available in original prompt
+                
+                // Clean up flowery/formal language for all campaign types
+                body = body.replace(/\bexquisite selections?\b/gi, 'items');
+                body = body.replace(/\btruly special\b/gi, 'great');
+                body = body.replace(/\bpatiently awaiting\b/gi, 'waiting');
+                body = body.replace(/\bvalued customer\b/gi, 'VIP');
+                body = body.replace(/\bwe understand\b/gi, 'we know');
+                body = body.replace(/\bbeautiful items\b/gi, 'items');
+                body = body.replace(/\bchosen pieces\b/gi, 'items');
+                body = body.replace(/\bawaiting their new home\b/gi, 'in your cart');
+                
                 variant.body = body;
             }
             
